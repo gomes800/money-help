@@ -30,18 +30,13 @@ public class UserService {
         return userRepository.save(obj);
     }
 
-    public User update(Long id, User obj) {
-        try {
-            User entity = userRepository.getReferenceById(id);
-            updateData(entity, obj);
-            return userRepository.save(entity);
-        } catch (EntityNotFoundException e) {
-            throw new RuntimeException();
-        }
-    }
+    public User update(Long id, User user) {
+        User existing = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found."));
 
-    private void updateData(User entity, User obj) {
-        entity.setName(obj.getName());
+        existing.setName(user.getName());
+
+        return userRepository.save(existing);
     }
 
     @Transactional
