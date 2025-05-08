@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,11 +16,11 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserService service;
 
     @GetMapping
     public ResponseEntity<List<User>> findAll() {
-        List<User> users = userService.findAll();
+        List<User> users = service.findAll();
         if (users.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -30,20 +29,20 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id) {
-        Optional<User> user = userService.findById(id);
+        Optional<User> user = service.findById(id);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/insert")
     public ResponseEntity<User> insertUser(@RequestBody User user) {
-        User newUser = userService.insert(user);
+        User newUser = service.insert(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
         try {
-            User updated = userService.update(id, user);
+            User updated = service.update(id, user);
             return ResponseEntity.ok(updated);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -52,7 +51,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+        service.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 }

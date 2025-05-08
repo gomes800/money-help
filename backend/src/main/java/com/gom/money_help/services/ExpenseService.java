@@ -15,41 +15,36 @@ import java.util.Optional;
 public class ExpenseService {
 
     @Autowired
-    private ExpenseRepository expenseRepository;
+    private ExpenseRepository repository;
 
     public List<Expense> findAll() {
-        return expenseRepository.findAll();
+        return repository.findAll();
     }
 
     public Optional<Expense> findById(Long id) {
-        return expenseRepository.findById(id);
+        return repository.findById(id);
     }
 
     public Expense insert(Expense obj) {
-        return expenseRepository.save(obj);
+        return repository.save(obj);
     }
 
-    public Expense update(Long id, Expense obj) {
-        try {
-            Expense entity = expenseRepository.getReferenceById(id);
-            updateData(entity, obj);
-            return expenseRepository.save(entity);
-        } catch (EntityNotFoundException e) {
-            throw new RuntimeException();
-        }
-    }
+    public Expense update(Long id, Expense expense) {
+        Expense existing = repository. findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Expense not found."));
 
-    private void updateData(Expense entity, Expense obj) {
-        entity.setName(obj.getName());
-        entity.setCategory(obj.getCategory());
-        entity.setValue(obj.getValue());
-        entity.setDate(obj.getDate());
+        existing.setName(expense.getName());
+        existing.setCategory(expense.getCategory());
+        existing.setValue(expense.getValue());
+        existing.setDate(expense.getDate());
+
+        return repository.save(existing);
     }
 
     @Transactional
     public void deleteExpense(Long id) {
         try {
-            expenseRepository.deleteById(id);
+            repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new RuntimeException("Expense not found with ID: " + id);
         }
