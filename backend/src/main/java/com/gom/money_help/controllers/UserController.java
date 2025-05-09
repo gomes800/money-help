@@ -54,4 +54,10 @@ public class UserController {
         service.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/addBalance/{id}")
+    public ResponseEntity<Void> addBalance(@PathVariable Long id, @RequestBody double value) {
+        service.addBalance(id, value);
+        return ResponseEntity.ok().build();
+    }
 }

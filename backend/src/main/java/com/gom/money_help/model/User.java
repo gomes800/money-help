@@ -22,7 +22,7 @@ public class User implements Serializable {
     private String name;
     private String login;
     private String password;
-    private Long balanceInCents;
+    private Long balanceInCents = 0L;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Expense> expenses;
