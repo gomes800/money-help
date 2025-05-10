@@ -16,11 +16,11 @@ import java.util.Optional;
 public class ExpenseController {
 
     @Autowired
-    private ExpenseService service;
+    private ExpenseService expenseService;
 
     @GetMapping
     public ResponseEntity<List<Expense>> findAll() {
-        List<Expense> expenses = service.findAll();
+        List<Expense> expenses = expenseService.findAll();
         if (expenses.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -29,20 +29,20 @@ public class ExpenseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Expense> findById(Long id) {
-        Optional<Expense> expense = service.findById(id);
+        Optional<Expense> expense = expenseService.findById(id);
         return expense.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/insert")
-    public ResponseEntity<Expense> insertExpense(@RequestBody Expense expense) {
-        Expense newExpense = service.insert(expense);
+    @PostMapping("/insert/{userId}")
+    public ResponseEntity<Expense> addExpenseToUser(@PathVariable Long userId, @RequestBody Expense expense) {
+        Expense newExpense = expenseService.addExpenseToUser(userId, expense);
         return ResponseEntity.status(HttpStatus.CREATED).body(newExpense);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Expense> updateExpense(@PathVariable Long id, @RequestBody Expense expense) {
+    @PutMapping("/{userId}/{expenseId}")
+    public ResponseEntity<Expense> updateExpense(@PathVariable Long userId, @PathVariable Long expenseId, @RequestBody Expense updatedExpense) {
         try {
-            Expense updated = service.update(id, expense);
+            Expense updated = expenseService.update(userId, expenseId, updatedExpense);
             return ResponseEntity.ok(updated);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -50,8 +50,8 @@ public class ExpenseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(Long id) {
-        service.deleteExpense(id);
+    public ResponseEntity<Void> delete(@PathVariable Long userId, @PathVariable Long expenseId) {
+        expenseService.deleteExpense(userId, expenseId);
         return ResponseEntity.noContent().build();
     }
 }
