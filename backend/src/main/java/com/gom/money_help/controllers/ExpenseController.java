@@ -3,7 +3,6 @@ package com.gom.money_help.controllers;
 import com.gom.money_help.dto.ExpenseDTO;
 import com.gom.money_help.model.Expense;
 import com.gom.money_help.services.ExpenseService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
