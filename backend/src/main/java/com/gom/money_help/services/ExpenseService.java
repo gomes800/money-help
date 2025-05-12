@@ -1,5 +1,6 @@
 package com.gom.money_help.services;
 
+import com.gom.money_help.dto.ExpenseDTO;
 import com.gom.money_help.model.Expense;
 import com.gom.money_help.model.User;
 import com.gom.money_help.repositories.ExpenseRepository;
@@ -9,6 +10,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,32 +34,42 @@ public class ExpenseService {
     }
 
     @Transactional
-    public Expense addExpenseToUser(Long id, Expense expense) {
-        User user = userRepository.findById(id)
+    public Expense addExpenseToUser(Long userId, ExpenseDTO expenseDTO) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found."));
 
-        if(expense.getValue() <= 0) {
+        if(expenseDTO.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Expense value must be positive");
         }
 
+        Expense expense = new Expense();
         expense.setUser(user);
-        user.getExpenses().add(expense);
+        expense.setName(expenseDTO.getName());
+        expense.setCategory(expenseDTO.getCategory());
+        expense.setAmountInCents(expenseDTO.getAmount().movePointRight(2).longValueExact());
+        expense.setDate(LocalDateTime.now());
 
         return expenseRepository.save(expense);
     }
 
-    public Expense update(Long userId, Long expenseId, Expense updatedExpense) {
-        Expense existing = expenseRepository. findById(expenseId)
+    @Transactional
+    public Expense updateExpense(Long userId, Long expenseId, ExpenseDTO updatedDTO) {
+        Expense existing = expenseRepository.findById(expenseId)
                 .orElseThrow(() -> new EntityNotFoundException("Expense not found."));
 
         if (!existing.getUser().getId().equals(userId)) {
             throw new SecurityException("Cannot update another user's expense.");
         }
 
-        if (updatedExpense.getName() != null) existing.setName(updatedExpense.getName());
-        if (updatedExpense.getCategory() != null) existing.setCategory(updatedExpense.getCategory());
-        if (updatedExpense.getValue() != null) existing.setValue(updatedExpense.getValue());
-        if (updatedExpense.getDate() != null) existing.setDate(updatedExpense.getDate());
+        if (updatedDTO.getName() != null) existing.setName(updatedDTO.getName());
+        if (updatedDTO.getCategory() != null) existing.setCategory(updatedDTO.getCategory());
+        if (updatedDTO.getAmount() != null) {
+            if (updatedDTO.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("Expense amount must be positive.");
+            }
+            existing.setAmountInCents(updatedDTO.getAmount().movePointRight(2).longValueExact());
+        }
+        if (updatedDTO.getDate() != null) existing.setDate(updatedDTO.getDate());
 
         return expenseRepository.save(existing);
     }

@@ -1,5 +1,6 @@
 package com.gom.money_help.controllers;
 
+import com.gom.money_help.dto.ExpenseDTO;
 import com.gom.money_help.model.Expense;
 import com.gom.money_help.services.ExpenseService;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,22 +35,25 @@ public class ExpenseController {
     }
 
     @PostMapping("/insert/{userId}")
-    public ResponseEntity<Expense> addExpenseToUser(@PathVariable Long userId, @RequestBody Expense expense) {
-        Expense newExpense = expenseService.addExpenseToUser(userId, expense);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newExpense);
+    public ResponseEntity<ExpenseDTO> addExpense(@PathVariable Long userId, @RequestBody ExpenseDTO expenseDTO) {
+        Expense savedExpense = expenseService.addExpenseToUser(userId, expenseDTO);
+
+        ExpenseDTO response = ExpenseDTO.from(savedExpense);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{userId}/{expenseId}")
-    public ResponseEntity<Expense> updateExpense(@PathVariable Long userId, @PathVariable Long expenseId, @RequestBody Expense updatedExpense) {
-        try {
-            Expense updated = expenseService.update(userId, expenseId, updatedExpense);
-            return ResponseEntity.ok(updated);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ExpenseDTO> updateExpense(
+            @PathVariable Long userId,
+            @PathVariable Long expenseId,
+            @RequestBody ExpenseDTO updateDTO) {
+
+        Expense updateExpense = expenseService.updateExpense(userId, expenseId, updateDTO);
+        return ResponseEntity.ok(ExpenseDTO.from(updateExpense));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{userId}/{expenseId}")
     public ResponseEntity<Void> delete(@PathVariable Long userId, @PathVariable Long expenseId) {
         expenseService.deleteExpense(userId, expenseId);
         return ResponseEntity.noContent().build();

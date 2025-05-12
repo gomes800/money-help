@@ -24,6 +24,6 @@ public class Expense implements Serializable {
     private User user;
     private String name;
     private Categories category;
-    private Long value;
-    private LocalDate date;
+    private Long amountInCents;
+    private LocalDateTime date;
 }
