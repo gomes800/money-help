@@ -1,5 +1,6 @@
 package com.gom.money_help.services;
 
+import com.gom.money_help.dto.SummaryDTO;
 import com.gom.money_help.model.User;
 import com.gom.money_help.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,45 +16,52 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
-    private UserRepository repository;
+    private UserRepository userRepository;
 
     public List<User> findAll() {
-        return repository.findAll();
+        return userRepository.findAll();
     }
 
     public Optional<User> findById(Long id) {
-        return repository.findById(id);
+        return userRepository.findById(id);
     }
 
     public User insert(User obj) {
-        return repository.save(obj);
+        return userRepository.save(obj);
     }
 
     public User update(Long id, User user) {
-        User existing = repository.findById(id)
+        User existing = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found."));
 
         existing.setName(user.getName());
 
-        return repository.save(existing);
+        return userRepository.save(existing);
     }
 
     @Transactional
     public void deleteUser(Long id) {
         try {
-            repository.deleteById(id);
+            userRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException("User not found with ID: " + id);
         }
     }
 
     public void addBalance(Long id, double value) {
-        User user = repository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found."));
         if (value <= 0) {
             throw new IllegalArgumentException("Value must be higher than zero.");
         }
         user.setBalanceInCents(user.getBalanceInCents() + Math.round(value * 100));
-        repository.save(user);
+        userRepository.save(user);
+    }
+
+    public SummaryDTO summary(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        return SummaryDTO.from(user);
     }
 }

@@ -1,5 +1,6 @@
 package com.gom.money_help.controllers;
 
+import com.gom.money_help.dto.SummaryDTO;
 import com.gom.money_help.model.User;
 import com.gom.money_help.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,48 +17,54 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    private UserService service;
+    private UserService userService;
 
     @GetMapping
     public ResponseEntity<List<User>> findAll() {
-        List<User> users = service.findAll();
+        List<User> users = userService.findAll();
         if (users.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
-        Optional<User> user = service.findById(id);
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> findById(@PathVariable Long userId) {
+        Optional<User> user = userService.findById(userId);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/insert")
     public ResponseEntity<User> insertUser(@RequestBody User user) {
-        User newUser = service.insert(user);
+        User newUser = userService.insert(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    @PutMapping("/{userId}")
+    public ResponseEntity<User> updateUser(@PathVariable Long userId, @RequestBody User user) {
         try {
-            User updated = service.update(id, user);
+            User updated = userService.update(userId, user);
             return ResponseEntity.ok(updated);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        service.deleteUser(id);
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/addBalance/{id}")
-    public ResponseEntity<Void> addBalance(@PathVariable Long id, @RequestBody double value) {
-        service.addBalance(id, value);
+    @PostMapping("/addBalance/{userId}")
+    public ResponseEntity<Void> addBalance(@PathVariable Long userId, @RequestBody double value) {
+        userService.addBalance(userId, value);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/summary/{userId}")
+    public ResponseEntity<SummaryDTO> summary(@PathVariable Long userId) {
+        SummaryDTO summary = userService.summary(userId);
+        return ResponseEntity.ok(summary);
     }
 }
