@@ -1,6 +1,8 @@
 package com.gom.money_help.services;
 
+import com.gom.money_help.dto.ExpenseDTO;
 import com.gom.money_help.dto.SummaryDTO;
+import com.gom.money_help.model.Expense;
 import com.gom.money_help.model.User;
 import com.gom.money_help.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -9,8 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -62,6 +67,16 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        return SummaryDTO.from(user);
+        SummaryDTO dto = new SummaryDTO();
+        dto.setBalance(BigDecimal.valueOf(user.getBalanceInCents()).movePointLeft(2));
+
+        List<ExpenseDTO> lastExpenses = user.getExpenses().stream()
+                .sorted(Comparator.comparing(Expense::getId).reversed())
+                .limit(3)
+                .map(ExpenseDTO::from)
+                .collect(Collectors.toList());
+
+        dto.setExpenses(lastExpenses);
+        return dto;
     }
 }
