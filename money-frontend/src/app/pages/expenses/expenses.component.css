@@ -1,0 +1,60 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+}
+
+.lista-container {
+  margin-top: 2rem;
+}
+
+.despesa-lista {
+  list-style: none;
+  padding: 0;
+}
+
+.despesa-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f4f4f4;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.despesa-info {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nome {
+  font-weight: bold;
+  flex: 1;
+}
+
+.valor {
+  color: green;
+  font-weight: bold;
+}
+
+.data {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.btn-excluir {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-excluir:hover {
+  background-color: #c0392b;
+}

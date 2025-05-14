@@ -1,0 +1,37 @@
+<div class="container">
+  <h1>Controle de Despesas</h1>
+
+  <div class="lista-container">
+    <h2>Suas Despesas</h2>
+
+    <p *ngIf="expenses && expenses.length === 0">Nenhuma despesa cadastrada</p>
+
+    <ul *ngIf="expenses && expenses.length > 0" class="despesa-lista">
+      <li *ngFor="let expense of expenses" class="despesa-item">
+        <div class="despesa-info">
+          <span class="nome">{{ expense.name }}</span>
+          <span class="valor">R$ {{ expense.amount.toFixed(2) }}</span>
+          <span class="data">{{ expense.date | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <button class="btn-excluir">Excluir</button>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="formulario">
+  <h3>Nova Despesa</h3>
+  <form (ngSubmit)="onSubmit()" #expenseForm="ngForm">
+    <input type="text" placeholder="Nome" [(ngModel)]="newExpense.name" name="name" required />
+    <input type="text" placeholder="Descrição" [(ngModel)]="newExpense.description" name="description" />
+    <input type="number" placeholder="Valor" [(ngModel)]="newExpense.amount" name="amount" required />
+    <input type="date" [(ngModel)]="newExpense.date" name="date" required />
+    <select [(ngModel)]="newExpense.category" name="category" required>
+      <option value="FOOD">Alimentação</option>
+      <option value="HEALTH">Saúde</option>
+      <option value="TRANSPORT">Transporte</option>
+      <!-- adicione mais se necessário -->
+    </select>
+    <button type="submit">Adicionar Despesa</button>
+  </form>
+</div>
+
