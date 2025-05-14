@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ExpenseService {
@@ -24,8 +26,18 @@ public class ExpenseService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<Expense> findAll() {
-        return expenseRepository.findAll();
+    public List<ExpenseDTO> getAllUsersExpenses(Long userId, Long requestingUserId) {
+        if (!userId.equals(requestingUserId)) {
+            throw new SecurityException("Acess denied: user can only access their own expenses.");
+        }
+
+        if (!userRepository.existsById(userId)) {
+            throw new EntityNotFoundException("User not found.");
+        }
+        List<Expense> userExpenses = expenseRepository.findAllByUserIdOrderByIdDesc(userId);
+        return userExpenses.stream()
+                .map(ExpenseDTO::from)
+                .collect(Collectors.toList());
     }
 
     public Optional<Expense> findById(Long id) {
@@ -44,9 +56,10 @@ public class ExpenseService {
         Expense expense = new Expense();
         expense.setUser(user);
         expense.setName(expenseDTO.getName());
+        expense.setDescription(expenseDTO.getDescription());
         expense.setCategory(expenseDTO.getCategory());
         expense.setAmountInCents(expenseDTO.getAmount().movePointRight(2).longValueExact());
-        expense.setDate(LocalDateTime.now());
+        expense.setDate(expenseDTO.getDate());
 
         return expenseRepository.save(expense);
     }

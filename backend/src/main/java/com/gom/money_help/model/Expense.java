@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,6 +24,7 @@ public class Expense implements Serializable {
     private User user;
     private String name;
     private Categories category;
+    private String description;
     private Long amountInCents;
-    private LocalDateTime date;
+    private LocalDate date;
 }

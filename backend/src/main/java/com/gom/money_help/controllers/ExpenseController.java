@@ -18,13 +18,10 @@ public class ExpenseController {
     @Autowired
     private ExpenseService expenseService;
 
-    @GetMapping
-    public ResponseEntity<List<Expense>> findAll() {
-        List<Expense> expenses = expenseService.findAll();
-        if (expenses.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(expenses);
+    @GetMapping("/all/{userId}")
+    public ResponseEntity<List<ExpenseDTO>> findUsersExpenses(@PathVariable Long userId) {
+        List<ExpenseDTO> userExpenses = expenseService.getAllUsersExpenses(userId, userId);
+        return ResponseEntity.ok(userExpenses);
     }
 
     @GetMapping("/{id}")
