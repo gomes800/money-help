@@ -75,6 +75,7 @@ public class ExpenseService {
 
         if (updatedDTO.getName() != null) existing.setName(updatedDTO.getName());
         if (updatedDTO.getCategory() != null) existing.setCategory(updatedDTO.getCategory());
+        if (updatedDTO.getDescription() != null) existing.setDescription(updatedDTO.getDescription());
         if (updatedDTO.getAmount() != null) {
             if (updatedDTO.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
                 throw new IllegalArgumentException("Expense amount must be positive.");
