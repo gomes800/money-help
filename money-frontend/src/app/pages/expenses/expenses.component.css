@@ -5,16 +5,16 @@
   font-family: Arial, sans-serif;
 }
 
-.lista-container {
+.list-container {
   margin-top: 2rem;
 }
 
-.despesa-lista {
+.expense-lista {
   list-style: none;
   padding: 0;
 }
 
-.despesa-item {
+.expense-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,7 +25,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.despesa-info {
+.expense-info {
   display: flex;
   gap: 2rem;
   align-items: center;

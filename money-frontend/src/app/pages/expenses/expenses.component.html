@@ -2,25 +2,38 @@
   <h1>Controle de Despesas</h1>
 
   <div class="menu">
-  <button routerLink="/dashboard">Voltar ao Dashboard</button>
-  <button routerLink="/addExpense">Adicionar Despesa</button>
-</div>
+    <button routerLink="/dashboard">Voltar ao Dashboard</button>
+    <button routerLink="/addExpense">Adicionar Despesa</button>
+  </div>
 
-  <div class="lista-container">
+  <div class="list-container">
     <h2>Suas Despesas</h2>
 
     <p *ngIf="expenses && expenses.length === 0">Nenhuma despesa cadastrada</p>
 
-    <ul *ngIf="expenses && expenses.length > 0" class="despesa-lista">
-      <li *ngFor="let expense of expenses" class="despesa-item">
-        <div class="despesa-info">
+    <ul *ngIf="expenses && expenses.length > 0" class="expense-list">
+      <li *ngFor="let expense of expenses" class="expense-item">
+        <div class="expense-info" *ngIf="editingId !== expense.id">
           <span class="nome">{{ expense.name }}</span>
           <span class="valor">R$ {{ expense.amount.toFixed(2) }}</span>
           <span class="data">{{ expense.date | date:'dd/MM/yyyy' }}</span>
+
+          <button class="btn-editar" (click)="startEdit(expense)">Editar</button>
+          <button class="btn-excluir" (click)="deleteExpense(1, expense.id)">Excluir</button>
         </div>
-        <button class="btn-excluir">Excluir</button>
+
+        <div class="expense-edit" *ngIf="editingId === expense.id">
+          <input [(ngModel)]="editExpense.name" placeholder="Nome" />
+          <input [(ngModel)]="editExpense.amount" type="number" placeholder="Valor" />
+          <input [(ngModel)]="editExpense.category" placeholder="Categoria" />
+          <input [(ngModel)]="editExpense.description" placeholder="Descrição" />
+          <input [(ngModel)]="editExpense.date" type="date" />
+
+          <button class="btn-salvar" (click)="saveEdit(expense.id)">Salvar</button>
+          <button class="btn-cancelar" (click)="cancelEdit()">Cancelar</button>
+        </div>
       </li>
     </ul>
+
   </div>
 </div>
-

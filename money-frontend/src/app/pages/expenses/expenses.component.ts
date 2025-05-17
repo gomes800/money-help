@@ -23,7 +23,16 @@ export class ExpensesComponent implements OnInit {
     date: ''
   }
 
-  constructor(private expenseService: ExpenseService) {}
+  editingId: number | null = null;
+  editExpense: Omit<Expenses, 'id'> = {
+    name: '',
+    category: '',
+    description: '',
+    amount: 0,
+    date: ''
+  };
+
+  constructor(private expenseService: ExpenseService) { }
 
   ngOnInit(): void {
     this.expenseService.getMyExpenses().subscribe({
@@ -44,18 +53,62 @@ export class ExpensesComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao adicionar despesa:', err);
+        alert('Erro ao adicionar despesa.');
       }
     })
   }
 
   resetForm(): void {
-  this.newExpense = {
-    name: '',
-    description: '',
-    amount: 0,
-    category: '',
-    date: ''
-  };
-}
+    this.newExpense = {
+      name: '',
+      description: '',
+      amount: 0,
+      category: '',
+      date: ''
+    };
+  }
+
+  startEdit(expense: Expenses): void {
+    this.editingId = expense.id;
+    this.editExpense = {
+      name: expense.name,
+      category: expense.category,
+      description: expense.description,
+      amount: expense.amount,
+      date: expense.date
+    };
+  }
+
+  cancelEdit(): void {
+    this.editingId = null;
+  }
+
+  saveEdit(expenseId: number): void {
+    const userId = 1;
+    this.expenseService.updateExpense(userId, expenseId, this.editExpense).subscribe({
+      next: updated => {
+        this.expenses = this.expenses.map(e =>
+          e.id === expenseId ? updated : e
+        );
+        this.editingId = null;
+      },
+      error: err => console.error('Erro ao atualizar:', err)
+    });
+  }
+
+  deleteExpense(userId: number, expenseId: number): void {
+    const confirmDelete = confirm('Tem certeza que deseja excluir essa despesa?');
+    if (confirmDelete) {
+      this.expenseService.deleteExpense(userId, expenseId).subscribe({
+        next: () => {
+          this.expenses = this.expenses.filter(e => e.id !== expenseId);
+        },
+        error: err => {
+          console.error('Erro ao excluir despesa:', err);
+          alert('Erro ao excluir despesa.');
+        }
+      });
+    }
+  }
 
 }

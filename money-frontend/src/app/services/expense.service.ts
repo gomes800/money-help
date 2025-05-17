@@ -16,16 +16,23 @@ export interface Expenses {
   providedIn: 'root'
 })
 export class ExpenseService {
-  private readonly apiUrl= `${environment.apiUrl}/expenses/all/1`
+  private readonly baseUrl= `${environment.apiUrl}/expenses`
 
   constructor(private http: HttpClient) { }
 
   getMyExpenses(): Observable<Expenses[]> {
-    return this.http.get<Expenses[]>(this.apiUrl);
+    return this.http.get<Expenses[]>(`${this.baseUrl}/all/1`);
   }
 
   addExpense(expense: Omit<Expenses, 'id'>): Observable<Expenses> {
-    const url = `${environment.apiUrl}/expenses/insert/1`;
-    return this.http.post<Expenses>(url, expense);
+    return this.http.post<Expenses>(`${this.baseUrl}/insert/1`, expense);
   }
+
+  updateExpense(userId: 1, expenseId: number, expense: Omit<Expenses, 'id'>): Observable<Expenses> {
+    return this.http.put<Expenses>(`${this.baseUrl}/${userId}/${expenseId}`, expense);
+  }
+
+  deleteExpense(userId: number, expenseId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${userId}/${expenseId}`)
+  } 
 }
