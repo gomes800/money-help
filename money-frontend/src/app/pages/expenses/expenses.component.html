@@ -1,6 +1,11 @@
 <div class="container">
   <h1>Controle de Despesas</h1>
 
+  <div class="menu">
+  <button routerLink="/dashboard">Voltar ao Dashboard</button>
+  <button routerLink="/addExpense">Adicionar Despesa</button>
+</div>
+
   <div class="lista-container">
     <h2>Suas Despesas</h2>
 
@@ -17,21 +22,5 @@
       </li>
     </ul>
   </div>
-</div>
-<div class="formulario">
-  <h3>Nova Despesa</h3>
-  <form (ngSubmit)="onSubmit()" #expenseForm="ngForm">
-    <input type="text" placeholder="Nome" [(ngModel)]="newExpense.name" name="name" required />
-    <input type="text" placeholder="Descrição" [(ngModel)]="newExpense.description" name="description" />
-    <input type="number" placeholder="Valor" [(ngModel)]="newExpense.amount" name="amount" required />
-    <input type="date" [(ngModel)]="newExpense.date" name="date" required />
-    <select [(ngModel)]="newExpense.category" name="category" required>
-      <option value="FOOD">Alimentação</option>
-      <option value="HEALTH">Saúde</option>
-      <option value="TRANSPORT">Transporte</option>
-      <!-- adicione mais se necessário -->
-    </select>
-    <button type="submit">Adicionar Despesa</button>
-  </form>
 </div>
 

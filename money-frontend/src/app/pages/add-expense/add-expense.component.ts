@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { Expenses, ExpenseService } from '../../services/expense.service';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 
 
 @Component({
   selector: 'app-add-expense',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, RouterModule],
   templateUrl: './add-expense.component.html',
   styleUrl: './add-expense.component.css'
 })

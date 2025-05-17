@@ -1,5 +1,10 @@
 <div class="container">
   <h2>Adicionar Despesa</h2>
+
+  <div class="menu">
+  <button routerLink="/dashboard">Voltar ao Dashboard</button>
+</div>
+
   <form (ngSubmit)="onSubmit()" #form="ngForm">
     <div class="form-group">
       <label for="name">Nome</label>
