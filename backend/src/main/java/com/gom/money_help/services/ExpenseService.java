@@ -61,6 +61,9 @@ public class ExpenseService {
         expense.setAmountInCents(expenseDTO.getAmount().movePointRight(2).longValueExact());
         expense.setDate(expenseDTO.getDate());
 
+        user.setBalanceInCents(user.getBalanceInCents() - expense.getAmountInCents());
+        userRepository.save(user);
+
         return expenseRepository.save(expense);
     }
 
