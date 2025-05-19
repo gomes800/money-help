@@ -46,6 +46,19 @@
   color: #666;
 }
 
+.btn-editar {
+  background-color: #2a6f97;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-editar:hover {
+  background-color: #2170a5;
+}
+
 .btn-excluir {
   background-color: #e74c3c;
   color: white;

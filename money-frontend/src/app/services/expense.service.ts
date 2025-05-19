@@ -12,6 +12,15 @@ export interface Expenses {
   date: string;
 }
 
+export interface PagedResponse<T> {
+  content: T[];
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,8 +29,8 @@ export class ExpenseService {
 
   constructor(private http: HttpClient) { }
 
-  getMyExpenses(): Observable<Expenses[]> {
-    return this.http.get<Expenses[]>(`${this.baseUrl}/all/1`);
+  getMyExpenses(page: number = 0, size: number = 5): Observable<PagedResponse<Expenses>> {
+    return this.http.get<PagedResponse<Expenses>>(`${this.baseUrl}/user/1?page=${page}&size=${size}`);
   }
 
   addExpense(expense: Omit<Expenses, 'id'>): Observable<Expenses> {

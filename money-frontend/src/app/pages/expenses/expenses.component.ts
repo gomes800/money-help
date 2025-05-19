@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Expenses, ExpenseService } from '../../services/expense.service';
+import { Expenses, ExpenseService, PagedResponse } from '../../services/expense.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -14,6 +14,8 @@ import { RouterModule } from '@angular/router';
 export class ExpensesComponent implements OnInit {
 
   expenses: Expenses[] = [];
+
+  pagedExpenses: PagedResponse<Expenses> | null = null
 
   newExpense: Omit<Expenses, 'id'> = {
     name: '',
@@ -37,7 +39,8 @@ export class ExpensesComponent implements OnInit {
   ngOnInit(): void {
     this.expenseService.getMyExpenses().subscribe({
       next: (data) => {
-        this.expenses = data;
+        this.pagedExpenses = data;
+        this.expenses = data.content;
       },
       error: (err) => {
         console.error("Erro ao carregar despesas: ", err);
