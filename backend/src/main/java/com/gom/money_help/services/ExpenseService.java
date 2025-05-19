@@ -1,6 +1,7 @@
 package com.gom.money_help.services;
 
 import com.gom.money_help.dto.ExpenseDTO;
+import com.gom.money_help.dto.PagedResponseDTO;
 import com.gom.money_help.model.Expense;
 import com.gom.money_help.model.User;
 import com.gom.money_help.repositories.ExpenseRepository;
@@ -8,6 +9,11 @@ import com.gom.money_help.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,7 +32,7 @@ public class ExpenseService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<ExpenseDTO> getAllUsersExpenses(Long userId, Long requestingUserId) {
+    public PagedResponseDTO<ExpenseDTO> getAllUsersExpenses(Long userId, Long requestingUserId, int page, int size) {
         if (!userId.equals(requestingUserId)) {
             throw new SecurityException("Acess denied: user can only access their own expenses.");
         }
@@ -34,10 +40,12 @@ public class ExpenseService {
         if (!userRepository.existsById(userId)) {
             throw new EntityNotFoundException("User not found.");
         }
-        List<Expense> userExpenses = expenseRepository.findAllByUserIdOrderByIdDesc(userId);
-        return userExpenses.stream()
-                .map(ExpenseDTO::from)
-                .collect(Collectors.toList());
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        Page<Expense> expensePage = expenseRepository.findAllByUserId(userId, pageable);
+        Page<ExpenseDTO> dtoPage= expensePage.map(ExpenseDTO::from);
+
+        return new PagedResponseDTO<>(dtoPage);
     }
 
     public Optional<Expense> findById(Long id) {

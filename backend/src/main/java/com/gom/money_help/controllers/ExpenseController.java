@@ -1,9 +1,11 @@
 package com.gom.money_help.controllers;
 
 import com.gom.money_help.dto.ExpenseDTO;
+import com.gom.money_help.dto.PagedResponseDTO;
 import com.gom.money_help.model.Expense;
 import com.gom.money_help.services.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +20,15 @@ public class ExpenseController {
     @Autowired
     private ExpenseService expenseService;
 
-    @GetMapping("/all/{userId}")
-    public ResponseEntity<List<ExpenseDTO>> findUsersExpenses(@PathVariable Long userId) {
-        List<ExpenseDTO> userExpenses = expenseService.getAllUsersExpenses(userId, userId);
-        return ResponseEntity.ok(userExpenses);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<PagedResponseDTO<ExpenseDTO>> getUsersExpenses(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Long requestingId = 1L;
+        PagedResponseDTO<ExpenseDTO> expenses = expenseService.getAllUsersExpenses(userId, requestingId, page, size);
+        return ResponseEntity.ok(expenses);
     }
 
     @GetMapping("/{id}")
