@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environments';
 
 export interface ExpenseDTO {
   description: string;
@@ -12,15 +13,24 @@ export interface Summary {
   expenses: ExpenseDTO[];
 }
 
+export interface BalanceRequest {
+  amount: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class DashboardService {
-  private readonly apiUrl = 'http://localhost:8080/users/summary/1';
+  private readonly baseUrl = `${environment.apiUrl}/users`;
 
   constructor(private http: HttpClient) {}
 
   getSummary(): Observable<Summary> {
-    return this.http.get<Summary>(this.apiUrl);
+    return this.http.get<Summary>(`${this.baseUrl}/summary/1`);
+  }
+
+  addBalance(userId: number, value: number): Observable<void> {
+    const payload = { value }
+    return this.http.post<void>(`${this.baseUrl}/addBalance/1`, payload)
   }
 }
