@@ -70,7 +70,6 @@ public class ExpenseService {
         expense.setDate(expenseDTO.getDate());
 
         user.setBalanceInCents(user.getBalanceInCents() - expense.getAmountInCents());
-        userRepository.save(user);
 
         return expenseRepository.save(expense);
     }
@@ -101,12 +100,16 @@ public class ExpenseService {
     @Transactional
     public void deleteExpense(Long userId, Long expenseId) {
         Expense expense = expenseRepository.findById(expenseId)
-                .orElseThrow(() -> new EntityNotFoundException("Expense nott found"));
+                .orElseThrow(() -> new EntityNotFoundException("Expense not found."));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found."));
 
         if (!expense.getUser().getId().equals(userId)) {
             throw new SecurityException("Expense does not belong to user");
         }
 
+        user.setBalanceInCents(user.getBalanceInCents() - expense.getAmountInCents());
         expenseRepository.delete(expense);
     }
 }

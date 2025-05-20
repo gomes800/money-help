@@ -1,5 +1,6 @@
 package com.gom.money_help.controllers;
 
+import com.gom.money_help.dto.BalanceRequest;
 import com.gom.money_help.dto.SummaryDTO;
 import com.gom.money_help.model.User;
 import com.gom.money_help.services.UserService;
@@ -57,8 +58,8 @@ public class UserController {
     }
 
     @PostMapping("/addBalance/{userId}")
-    public ResponseEntity<Void> addBalance(@PathVariable Long userId, @RequestBody double value) {
-        userService.addBalance(userId, value);
+    public ResponseEntity<Void> addBalance(@PathVariable Long userId, @RequestBody BalanceRequest request) {
+        userService.addBalance(userId, request.getValue());
         return ResponseEntity.ok().build();
     }
 
