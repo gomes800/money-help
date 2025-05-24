@@ -24,6 +24,7 @@ public class TokenService {
             String token = JWT.create()
                     .withIssuer("money-help")
                     .withSubject(user.getLogin())
+                    .withClaim("userId", user.getId())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
             return token;
@@ -46,6 +47,16 @@ public class TokenService {
         } catch (JWTVerificationException e) {
             return null;
         }
+    }
+
+    public Long getUserIdFromToken(String token) {
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        return JWT.require(algorithm)
+                .withIssuer("money-help")
+                .build()
+                .verify(token)
+                .getClaim("userId")
+                .asLong();
     }
 
     private Instant genExpirationDate() {

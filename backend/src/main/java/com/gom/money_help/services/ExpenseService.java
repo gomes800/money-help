@@ -32,14 +32,11 @@ public class ExpenseService {
     @Autowired
     private UserRepository userRepository;
 
-    public PagedResponseDTO<ExpenseDTO> getAllUsersExpenses(Long userId, Long requestingUserId, int page, int size) {
-        if (!userId.equals(requestingUserId)) {
-            throw new SecurityException("Acess denied: user can only access their own expenses.");
-        }
+    @Autowired
+    private AuthenticatedUserService authenticatedUserService;
 
-        if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("User not found.");
-        }
+    public PagedResponseDTO<ExpenseDTO> getAuthenticatedUserExpense(int page, int size) {
+        Long userId = authenticatedUserService.getUserId();
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
         Page<Expense> expensePage = expenseRepository.findAllByUserId(userId, pageable);
