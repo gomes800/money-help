@@ -4,6 +4,7 @@ import com.gom.money_help.dto.AuthenticationDTO;
 import com.gom.money_help.dto.LoginResponseDTO;
 import com.gom.money_help.dto.RegisterDTO;
 import com.gom.money_help.model.User;
+import com.gom.money_help.model.UserRole;
 import com.gom.money_help.repositories.UserRepository;
 import com.gom.money_help.services.TokenService;
 import jakarta.validation.Valid;
@@ -43,7 +44,7 @@ public class AuthenticationController {
         if (this.userRepository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.login(), encryptedPassword, data.role());
+        User newUser = new User(data.name(), data.login(), encryptedPassword, UserRole.USER);
 
         userRepository.save(newUser);
 

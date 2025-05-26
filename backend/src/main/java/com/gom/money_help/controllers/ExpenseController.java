@@ -20,14 +20,12 @@ public class ExpenseController {
     @Autowired
     private ExpenseService expenseService;
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user")
     public ResponseEntity<PagedResponseDTO<ExpenseDTO>> getUsersExpenses(
-            @PathVariable Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
-        Long requestingId = 1L;
-        PagedResponseDTO<ExpenseDTO> expenses = expenseService.getAllUsersExpenses(userId, requestingId, page, size);
+        PagedResponseDTO<ExpenseDTO> expenses = expenseService.getAuthenticatedUserExpense(page, size);
         return ResponseEntity.ok(expenses);
     }
 
