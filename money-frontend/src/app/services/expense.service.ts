@@ -29,8 +29,8 @@ export class ExpenseService {
 
   constructor(private http: HttpClient) { }
 
-  getMyExpenses(page: number = 0, size: number = 5): Observable<PagedResponse<Expenses>> {
-    return this.http.get<PagedResponse<Expenses>>(`${this.baseUrl}/user/1?page=${page}&size=${size}`);
+  getMyExpenses(): Observable<PagedResponse<Expenses>> {
+    return this.http.get<PagedResponse<Expenses>>(`${this.baseUrl}/user`);
   }
 
   addExpense(expense: Omit<Expenses, 'id'>): Observable<Expenses> {

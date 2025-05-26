@@ -1,0 +1,25 @@
+<div class="container">
+  <h2>Login</h2>
+  <form [formGroup]="form" (ngSubmit)="login()">
+    
+    <label>
+      Login
+      <input type="text" formControlName="login" placeholder="Digite seu login" />
+    </label>
+    <div *ngIf="form.get('login')?.invalid && form.get('login')?.touched" class="error">
+      Login é obrigatório
+    </div>
+
+    <label>
+      Senha
+      <input type="password" formControlName="password" placeholder="Digite sua senha" />
+    </label>
+    <div *ngIf="form.get('password')?.invalid && form.get('password')?.touched" class="error">
+      Senha com pelo menos 6 caracteres
+    </div>
+
+    <button type="submit" [disabled]="form.invalid">Entrar</button>
+  </form>
+
+  <p>Não tem uma conta? <a routerLink="/register">Cadastre-se</a></p>
+</div>
