@@ -35,28 +35,27 @@ public class ExpenseController {
         return expense.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/insert/{userId}")
-    public ResponseEntity<ExpenseDTO> addExpense(@PathVariable Long userId, @RequestBody ExpenseDTO expenseDTO) {
-        Expense savedExpense = expenseService.addExpenseToUser(userId, expenseDTO);
+    @PostMapping("/insert")
+    public ResponseEntity<ExpenseDTO> addExpense(@RequestBody ExpenseDTO expenseDTO) {
+        Expense savedExpense = expenseService.addExpenseToUser(expenseDTO);
 
         ExpenseDTO response = ExpenseDTO.from(savedExpense);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/{userId}/{expenseId}")
+    @PutMapping("/{expenseId}")
     public ResponseEntity<ExpenseDTO> updateExpense(
-            @PathVariable Long userId,
             @PathVariable Long expenseId,
             @RequestBody ExpenseDTO updateDTO) {
 
-        Expense updateExpense = expenseService.updateExpense(userId, expenseId, updateDTO);
+        Expense updateExpense = expenseService.updateExpense(expenseId, updateDTO);
         return ResponseEntity.ok(ExpenseDTO.from(updateExpense));
     }
 
-    @DeleteMapping("/{userId}/{expenseId}")
-    public ResponseEntity<Void> delete(@PathVariable Long userId, @PathVariable Long expenseId) {
-        expenseService.deleteExpense(userId, expenseId);
+    @DeleteMapping("/{expenseId}")
+    public ResponseEntity<Void> delete(@PathVariable Long expenseId) {
+        expenseService.deleteExpense(expenseId);
         return ResponseEntity.noContent().build();
     }
 }

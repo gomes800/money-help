@@ -50,7 +50,8 @@ public class ExpenseService {
     }
 
     @Transactional
-    public Expense addExpenseToUser(Long userId, ExpenseDTO expenseDTO) {
+    public Expense addExpenseToUser(ExpenseDTO expenseDTO) {
+        Long userId = authenticatedUserService.getUserId();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found."));
 
@@ -72,7 +73,9 @@ public class ExpenseService {
     }
 
     @Transactional
-    public Expense updateExpense(Long userId, Long expenseId, ExpenseDTO updatedDTO) {
+    public Expense updateExpense(Long expenseId, ExpenseDTO updatedDTO) {
+        Long userId = authenticatedUserService.getUserId();
+
         Expense existing = expenseRepository.findById(expenseId)
                 .orElseThrow(() -> new EntityNotFoundException("Expense not found."));
 
@@ -95,7 +98,9 @@ public class ExpenseService {
     }
 
     @Transactional
-    public void deleteExpense(Long userId, Long expenseId) {
+    public void deleteExpense(Long expenseId) {
+        Long userId = authenticatedUserService.getUserId();
+
         Expense expense = expenseRepository.findById(expenseId)
                 .orElseThrow(() -> new EntityNotFoundException("Expense not found."));
 

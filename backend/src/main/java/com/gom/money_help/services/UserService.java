@@ -23,6 +23,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AuthenticatedUserService authenticatedUserService;
+
     public List<User> findAll() {
         return userRepository.findAll();
     }
@@ -53,8 +56,10 @@ public class UserService {
         }
     }
 
-    public void addBalance(Long id, double value) {
-        User user = userRepository.findById(id)
+    public void addBalance(double value) {
+        Long userId = authenticatedUserService.getUserId();
+
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found."));
         if (value <= 0) {
             throw new IllegalArgumentException("Value must be higher than zero.");
@@ -63,7 +68,9 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public SummaryDTO summary(Long userId) {
+    public SummaryDTO summary() {
+        Long userId = authenticatedUserService.getUserId();
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
@@ -71,7 +78,7 @@ public class UserService {
         dto.setBalance(BigDecimal.valueOf(user.getBalanceInCents()).movePointLeft(2));
 
         List<ExpenseDTO> lastExpenses = user.getExpenses().stream()
-                .sorted(Comparator.comparing(Expense::getId).reversed())
+                .sorted(Comparator.comparing(Expense::getDate).reversed())
                 .limit(3)
                 .map(ExpenseDTO::from)
                 .collect(Collectors.toList());

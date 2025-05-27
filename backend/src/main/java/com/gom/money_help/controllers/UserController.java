@@ -57,15 +57,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/addBalance/{userId}")
-    public ResponseEntity<Void> addBalance(@PathVariable Long userId, @RequestBody BalanceRequest request) {
-        userService.addBalance(userId, request.getValue());
+    @PostMapping("/addBalance")
+    public ResponseEntity<Void> addBalance(@RequestBody BalanceRequest request) {
+        userService.addBalance(request.getValue());
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/summary/{userId}")
-    public ResponseEntity<SummaryDTO> summary(@PathVariable Long userId) {
-        SummaryDTO summary = userService.summary(userId);
+    @GetMapping("/summary")
+    public ResponseEntity<SummaryDTO> summary() {
+        SummaryDTO summary = userService.summary();
         return ResponseEntity.ok(summary);
     }
 }
