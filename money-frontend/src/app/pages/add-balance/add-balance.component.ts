@@ -23,7 +23,7 @@ export class AddBalanceComponent {
       return
     }
 
-    this.dashboardService.addBalance(this.userId, this.value).subscribe({
+    this.dashboardService.addBalance(this.value).subscribe({
       next: () => {
         console.log("Valor adicionado com sucesso.");
         this.value = 0;

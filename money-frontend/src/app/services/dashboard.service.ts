@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environments';
 
 export interface ExpenseDTO {
+  name: string;
   description: string;
   amount: number;
 }
@@ -26,11 +27,11 @@ export class DashboardService {
   constructor(private http: HttpClient) {}
 
   getSummary(): Observable<Summary> {
-    return this.http.get<Summary>(`${this.baseUrl}/summary/1`);
+    return this.http.get<Summary>(`${this.baseUrl}/summary`);
   }
 
-  addBalance(userId: number, value: number): Observable<void> {
+  addBalance(value: number): Observable<void> {
     const payload = { value }
-    return this.http.post<void>(`${this.baseUrl}/addBalance/1`, payload)
+    return this.http.post<void>(`${this.baseUrl}/addBalance`, payload)
   }
 }

@@ -27,7 +27,7 @@
       <h3>Últimas Despesas</h3>
       <ul>
         <li *ngFor="let expense of summary.expenses">
-          <span>{{ expense.description }}</span>
+          <span>{{ expense.name }}</span>
           <span>- R$ {{ expense.amount | number:'1.2-2' }}</span>
         </li>
       </ul>

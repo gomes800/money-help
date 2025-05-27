@@ -19,7 +19,7 @@
           <span class="data">{{ expense.date | date:'dd/MM/yyyy' }}</span>
 
           <button class="btn-editar" (click)="startEdit(expense)">Editar</button>
-          <button class="btn-excluir" (click)="deleteExpense(1, expense.id)">Excluir</button>
+          <button class="btn-excluir" (click)="deleteExpense(expense.id)">Excluir</button>
         </div>
 
         <div class="expense-edit" *ngIf="editingId === expense.id">

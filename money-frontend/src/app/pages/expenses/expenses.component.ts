@@ -88,7 +88,7 @@ export class ExpensesComponent implements OnInit {
 
   saveEdit(expenseId: number): void {
     const userId = 1;
-    this.expenseService.updateExpense(userId, expenseId, this.editExpense).subscribe({
+    this.expenseService.updateExpense(expenseId, this.editExpense).subscribe({
       next: updated => {
         this.expenses = this.expenses.map(e =>
           e.id === expenseId ? updated : e
@@ -99,10 +99,10 @@ export class ExpensesComponent implements OnInit {
     });
   }
 
-  deleteExpense(userId: number, expenseId: number): void {
+  deleteExpense(expenseId: number): void {
     const confirmDelete = confirm('Tem certeza que deseja excluir essa despesa?');
     if (confirmDelete) {
-      this.expenseService.deleteExpense(userId, expenseId).subscribe({
+      this.expenseService.deleteExpense(expenseId).subscribe({
         next: () => {
           this.expenses = this.expenses.filter(e => e.id !== expenseId);
         },

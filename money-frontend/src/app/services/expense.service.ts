@@ -34,14 +34,14 @@ export class ExpenseService {
   }
 
   addExpense(expense: Omit<Expenses, 'id'>): Observable<Expenses> {
-    return this.http.post<Expenses>(`${this.baseUrl}/insert/1`, expense);
+    return this.http.post<Expenses>(`${this.baseUrl}/insert`, expense);
   }
 
-  updateExpense(userId: 1, expenseId: number, expense: Omit<Expenses, 'id'>): Observable<Expenses> {
-    return this.http.put<Expenses>(`${this.baseUrl}/${userId}/${expenseId}`, expense);
+  updateExpense(expenseId: number, expense: Omit<Expenses, 'id'>): Observable<Expenses> {
+    return this.http.put<Expenses>(`${this.baseUrl}/${expenseId}`, expense);
   }
 
-  deleteExpense(userId: number, expenseId: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${userId}/${expenseId}`)
+  deleteExpense(expenseId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${expenseId}`)
   } 
 }
