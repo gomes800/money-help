@@ -34,12 +34,10 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User insert(User obj) {
-        return userRepository.save(obj);
-    }
+    public User update(User user) {
+        Long userId = authenticatedUserService.getUserId();
 
-    public User update(Long id, User user) {
-        User existing = userRepository.findById(id)
+        User existing = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found."));
 
         existing.setName(user.getName());
