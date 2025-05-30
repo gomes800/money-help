@@ -8,7 +8,7 @@ import { RegisterComponent } from './pages/register/register.component';
 import { LoginComponent } from './pages/login/login.component';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent },
+    { path: '', component: LoginComponent },
     { path: 'dashboard', component: DashboardComponent },
     { path: 'expenses', component: ExpensesComponent},
     { path: 'addExpense', component: AddExpenseComponent},

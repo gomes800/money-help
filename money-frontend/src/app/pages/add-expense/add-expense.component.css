@@ -56,3 +56,27 @@ button.cancel {
 button:hover {
   opacity: 0.9;
 }
+
+select {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border: 1.8px solid #ccd6f6;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  background-color: white;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 6px #3b82f6aa;
+}
+
+select option {
+  padding: 8px;
+}
+
