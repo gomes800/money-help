@@ -33,6 +33,9 @@ public class ExpenseService {
     private UserRepository userRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private AuthenticatedUserService authenticatedUserService;
 
     public PagedResponseDTO<ExpenseDTO> getAuthenticatedUserExpense(int page, int size) {
@@ -67,7 +70,7 @@ public class ExpenseService {
         expense.setAmountInCents(expenseDTO.getAmount().movePointRight(2).longValueExact());
         expense.setDate(expenseDTO.getDate());
 
-        user.setBalanceInCents(user.getBalanceInCents() - expense.getAmountInCents());
+        userService.adjustBalance(userId, expense.getAmountInCents());
 
         return expenseRepository.save(expense);
     }
@@ -83,6 +86,8 @@ public class ExpenseService {
             throw new SecurityException("Cannot update another user's expense.");
         }
 
+        Long previousAmountInCents = existing.getAmountInCents();
+
         if (updatedDTO.getName() != null) existing.setName(updatedDTO.getName());
         if (updatedDTO.getCategory() != null) existing.setCategory(updatedDTO.getCategory());
         if (updatedDTO.getDescription() != null) existing.setDescription(updatedDTO.getDescription());
@@ -90,9 +95,15 @@ public class ExpenseService {
             if (updatedDTO.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
                 throw new IllegalArgumentException("Expense amount must be positive.");
             }
+
             existing.setAmountInCents(updatedDTO.getAmount().movePointRight(2).longValueExact());
         }
         if (updatedDTO.getDate() != null) existing.setDate(updatedDTO.getDate());
+
+        Long newAmountInCents = existing.getAmountInCents();
+        long difference = newAmountInCents - previousAmountInCents;
+
+        userService.adjustBalance(userId, difference);
 
         return expenseRepository.save(existing);
     }
@@ -111,7 +122,8 @@ public class ExpenseService {
             throw new SecurityException("Expense does not belong to user");
         }
 
-        user.setBalanceInCents(user.getBalanceInCents() - expense.getAmountInCents());
+        userService.adjustBalance(userId, -expense.getAmountInCents());
+
         expenseRepository.delete(expense);
     }
 }

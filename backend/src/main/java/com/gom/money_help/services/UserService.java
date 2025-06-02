@@ -84,4 +84,12 @@ public class UserService {
         dto.setExpenses(lastExpenses);
         return dto;
     }
+
+    @Transactional
+    public void adjustBalance(Long userId, Long differenceInCents) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        user.setBalanceInCents(user.getBalanceInCents() - differenceInCents);
+        userRepository.save(user);
+    }
 }
